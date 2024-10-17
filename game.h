@@ -34,15 +34,28 @@ private:
 
     void getBoardDimensions()
     {
-        std::cout << "Podaj liczbe wierszy i kolumn planszy (parzyste liczby od 2 do 20): ";
         int x, y; // wymiary planszy
         while (true)
         {
-            getValidNumbers(x, y);
-
-            if (x < 2 || x > 20 || y < 2 || y > 20 || ((x * y) % 2 != 0))
+            std::cout << "Podaj liczbe wierszy planszy (liczba od 2 do 20): ";
+            while (!(std::cin >> x) || x < 2 || x > 20)
             {
-                std::cout << "Nieprawidlowe wymiary planszy. Sprobuj ponownie." << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Nieprawidlowa liczba wierszy. Sprobuj ponownie." << std::endl;
+            }
+
+            std::cout << "Podaj liczbe kolumn planszy (liczba od 2 do 20): ";
+            while (!(std::cin >> y) || y < 2 || y > 20)
+            {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Nieprawidlowa liczba kolumn. Sprobuj ponownie." << std::endl;
+            }
+
+            if ((x * y) % 2 != 0)
+            {
+                std::cout << "Iloczyn wierszy i kolumn musi byc parzysty. Sprobuj ponownie." << std::endl;
                 continue;
             }
             else
