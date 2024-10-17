@@ -1,16 +1,16 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GRA_H
+#define GRA_H
 
-#include "board.h"
+#include "tablica.h"
 
-class Game
+class Gra
 {
 public:
-    Game() : board(2, 2), player1Score(0), player2Score(0) {
-        getBoardDimensions();
+    Gra() : plansza(2, 2), wynik1(0), wynik2(0) {
+        wymiaryPlanszy();
     }
 
-    void getBoardDimensions()
+    void wymiaryPlanszy()
     {
         std::cout << "Podaj liczbe wierszy i kolumn planszy (parzyste liczby od 2 do 20): ";
         int x, y; // wymiary planszy
@@ -22,10 +22,10 @@ public:
             std::cin >> x >> y;
         }
 
-        board.setSize(x, y);
+        plansza.ustawRozmiar(x, y);
     }
 
-    bool playerMove()
+    bool ruchGracza()
     {
         int x1, y1, x2, y2;
 
@@ -33,58 +33,58 @@ public:
         {
             std::cout << "Podaj koordynaty pierwszej karty (rzad i kolumne oddzielone spacja): ";
             std::cin >> x1 >> y1;
-            if (board.isValidMove(x1, y1))
+            if (plansza.sprawdzRuch(x1, y1))
                 break;
             std::cout << "Nieprawidlowy ruch. Sprobuj ponownie." << std::endl;
         }
 
-        board.revealed[x1][y1] = true;
-        board.display();
+        plansza.odkryte[x1][y1] = true;
+        plansza.wyswietl();
 
         while (true)
         {
             std::cout << "Podaj koordynaty drugiej karty (rzad i kolumne oddzielone spacja): ";
             std::cin >> x2 >> y2;
-            if (board.isValidMove(x2, y2))
+            if (plansza.sprawdzRuch(x2, y2))
                 break;
             std::cout << "Nieprawidlowy ruch. Sprobuj ponownie." << std::endl;
         }
 
-        board.revealed[x2][y2] = true;
-        board.display();
+        plansza.odkryte[x2][y2] = true;
+        plansza.wyswietl();
 
-        if (board.board[x1][y1] == board.board[x2][y2])
+        if (plansza.plansza[x1][y1] == plansza.plansza[x2][y2])
         {
             std::cout << "Znaleziono pare!" << std::endl;
-            if (player1Turn)
+            if (kolejGracza1)
             {
-                player1Score++;
+                wynik1++;
             }
             else
             {
-                player2Score++;
+                wynik2++;
             }
             return true;
         }
         else
         {
             std::cout << "Brak pary." << std::endl;
-            board.revealed[x1][y1] = false;
-            board.revealed[x2][y2] = false;
+            plansza.odkryte[x1][y1] = false;
+            plansza.odkryte[x2][y2] = false;
             return false;
         }
     }
 
-    void end_game() {
+    void koniec_gry() {
         std::cout << "Koniec gry!" << std::endl;
-        std::cout << "Wynik gracza 1: " << player1Score << " pary" << std::endl;
-        std::cout << "Wynik gracza 2: " << player2Score << " pary" << std::endl;
+        std::cout << "Wynik gracza 1: " << wynik1 << " pary" << std::endl;
+        std::cout << "Wynik gracza 2: " << wynik2 << " pary" << std::endl;
 
-        if (player1Score > player2Score)
+        if (wynik1 > wynik2)
         {
             std::cout << "Gracz 1 wygrywa!" << std::endl;
         }
-        else if (player2Score > player1Score)
+        else if (wynik2 > wynik1)
         {
             std::cout << "Gracz 2 wygrywa!" << std::endl;
         }
@@ -94,52 +94,52 @@ public:
         }
     }
 
-    void game_loop() {
+    void petla_gry() {
         std::cout << "Zaczynamy gre!" << std::endl;
 
-        int totalPairs = board.rows * board.cols / 2;
+        int wszystkiePary = plansza.rzedy * plansza.kolumny / 2;
 
-        while (player1Score + player2Score < totalPairs)
+        while (wynik1 + wynik2 < wszystkiePary)
         {
-            board.display();
-            if (player1Turn)
+            plansza.wyswietl();
+            if (kolejGracza1)
             {
                 std::cout << "Kolej gracza 1." << std::endl;
-                if (!playerMove())
+                if (!ruchGracza())
                 {
-                    player1Turn = false;
+                    kolejGracza1 = false;
                 }
             }
             else
             {
                 std::cout << "Kolej gracza 2." << std::endl;
-                if (!playerMove())
+                if (!ruchGracza())
                 {
-                    player1Turn = true;
+                    kolejGracza1 = true;
                 }
             }
         }
 
-        end_game();
+        koniec_gry();
     }
 
-    void init()
+    void przygotowanie()
     {
         srand(time(0));
 
-        board.initialize();
+        plansza.przygotowanie();
 
-        player1Score = 0;
-        player2Score = 0;
-        player1Turn = true;
+        wynik1 = 0;
+        wynik2 = 0;
+        kolejGracza1 = true;
 
-        game_loop();
+        petla_gry();
     }
 private:
-    Board board;
-    int player1Score;
-    int player2Score;
-    bool player1Turn;
+    Plansza plansza;
+    int wynik1;
+    int wynik2;
+    bool kolejGracza1;
 };
 
 #endif
