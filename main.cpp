@@ -1,8 +1,8 @@
-#include "game.h"
+#include "gra.h"
 
 int main()
 {
-    Game game;
-    game.init();
+    Gra Gra;
+    Gra.przygotowanie();
     return 0;
 }
